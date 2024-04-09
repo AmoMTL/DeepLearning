@@ -14,9 +14,11 @@ learning_rate = 0.1
 discount = 0.95 # how important we find future actions
 
 epsilon = 0.95
-decay_from = 5000
+decay_start = 1000
+decay_end = 15000
+decay_value = epsilon / (decay_end - decay_start)
 
-buckets_size = 40
+buckets_size = 20
 discreet_os_size = [buckets_size] * len(env.observation_space.high)
 discreet_os_win_size = (env.observation_space.high - env.observation_space.low) / discreet_os_size
 
@@ -58,21 +60,33 @@ for episode in range(episodes):
             max_future_q = np.max(q_table[discreet_state + (action,)])
             new_q = (1 - learning_rate) * current_q + learning_rate * (reward + discount * max_future_q)
             q_table[discreet_state + (action,)] = new_q
-        elif new_state[0] >=env.goal_position:
+        elif new_state[0] >= env.goal_position:
             q_table[discreet_state, (action, )] = 0
         
         discreet_state = new_discreet_state
             #print(discreet_state)
 
-    if new_episode_reward > prior_reward and episode >= decay_from:
-        math.pow(epsilon, 2)
+    if decay_start <= episode <= decay_end:
+        epsilon -= decay_value
 
     prior_reward = new_episode_reward
     
     if episode % render_every == 0:
         
         print(f"Episode: {episode} Reward: {rewards[episode]} Epsilon={epsilon}")
-
+        
+        render_done = False
+        render_env = gym.make("MountainCar-v0", render_mode="human")
+        rstate = render_env.reset()
+        rdiscreet_state = get_discreet_state(rstate[0])
+        while not render_done:
+            action = np.argmax(q_table[rdiscreet_state])
+            rnew_state, _, rtruncation, rtermination, _ = render_env.step(action)
+            render_done = rtermination or rtruncation
+            rnew_discreet_state = get_discreet_state(rnew_state)
+            rdiscreet_state = rnew_discreet_state
+        
+        render_env.close()
 
     rewards.append(new_episode_reward)
 
