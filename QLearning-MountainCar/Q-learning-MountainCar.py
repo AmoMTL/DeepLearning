@@ -10,12 +10,14 @@ env = gym.make("MountainCar-v0", render_mode=None)
 episodes = 20000
 render_every = 1000
 
+logs_every = 100
+
 learning_rate = 0.1
 discount = 0.95 # how important we find future actions
 
 epsilon = 0.95
 decay_start = 1000
-decay_end = 15000
+decay_end = 8000
 decay_value = epsilon / (decay_end - decay_start)
 
 buckets_size = 20
@@ -29,8 +31,8 @@ def get_discreet_state(state):
     return tuple(discreet_state.astype(int))
 
 
-prior_reward = 0
-rewards = [0]
+prior_reward = -200
+rewards = [prior_reward]
 
 for episode in range(episodes):
 
@@ -40,7 +42,10 @@ for episode in range(episodes):
     done = False
 
     new_episode_reward = 0
-    #print(f"Episode: {episode} Reward: {rewards[episode]}")
+    
+    if episode % logs_every == 0:
+        mean_reward = sum(rewards[-logs_every:]) / logs_every
+        print(f"Episode: {episode} Mean Reward: {mean_reward} Epsilon: {epsilon}")
     
     while not done:
         
@@ -50,14 +55,15 @@ for episode in range(episodes):
         else:
             action = np.random.randint(0, env.action_space.n)
         
-        new_state, reward, _, done, _ = env.step(action)
+        new_state, reward, truncation, termination, _ = env.step(action)
+        done = truncation or termination
         new_discreet_state = get_discreet_state(new_state)
         current_q = q_table[discreet_state + (action,)]
 
         new_episode_reward += reward
         
         if not done:
-            max_future_q = np.max(q_table[discreet_state + (action,)])
+            max_future_q = np.max(q_table[new_discreet_state + (action,)])
             new_q = (1 - learning_rate) * current_q + learning_rate * (reward + discount * max_future_q)
             q_table[discreet_state + (action,)] = new_q
         elif new_state[0] >= env.goal_position:
@@ -81,10 +87,12 @@ for episode in range(episodes):
         rdiscreet_state = get_discreet_state(rstate[0])
         while not render_done:
             action = np.argmax(q_table[rdiscreet_state])
-            rnew_state, _, rtruncation, rtermination, _ = render_env.step(action)
+            rnew_state, rreward, rtruncation, rtermination, _ = render_env.step(action)
             render_done = rtermination or rtruncation
             rnew_discreet_state = get_discreet_state(rnew_state)
             rdiscreet_state = rnew_discreet_state
+
+        print(f"Render Episode Reward: {rreward} Epsilon={epsilon}")
         
         render_env.close()
 
