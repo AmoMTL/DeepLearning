@@ -1,9 +1,9 @@
 import gymnasium as gym
-from stable_baselines3 import DQN
+from stable_baselines3 import PPO
 
 model_dir = "models"
-model_type = "DQN"
-model_name = "DQN900000"
+model_type = "PPO"
+model_name = "PPO570000"
 model_path = f"{model_dir}\\{model_type}\\{model_name}"
 print(model_path)
 
@@ -26,6 +26,6 @@ def RenderEpisode(env, model, episodes=1):
 
 env = gym.make(env_name, render_mode="human")
 
-model = DQN.load(model_path, env)
+model = PPO.load(model_path, env)
 
 RenderEpisode(env, model, 10)

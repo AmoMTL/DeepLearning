@@ -1,10 +1,10 @@
 import gymnasium as gym
-from stable_baselines3 import DQN
+from stable_baselines3 import A2C
 import os
 import time
 
 env_name = "LunarLander-v2"
-model_name = "DQN"
+model_name = "A2C"
 
 timesteps = 10_000
 
@@ -26,7 +26,7 @@ model_dir, logs_dir = CreateModelsLogDir(model_name)
 
 env = gym.make(env_name, render_mode=None)
 env.reset()
-model = DQN('MlpPolicy', env, verbose=1, tensorboard_log=logs_dir)
+model = A2C('MlpPolicy', env, verbose=1, tensorboard_log=logs_dir)
 
 
 iters = 0
