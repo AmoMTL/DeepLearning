@@ -1,12 +1,10 @@
 import gymnasium as gym
-from stable_baselines3 import PPO
+from stable_baselines3 import A2C
 
 model_dir = "models"
-model_type = "PPO"
-model_name = "PPO570000"
-model_path = f"{model_dir}\\{model_type}\\{model_name}"
-print(model_path)
-
+model_type = "A2C"
+model_names = ["A2C14120000"]
+number_episodes = 4
 env_name = "LunarLander-v2"
 
 def RenderEpisode(env, model, episodes=1):
@@ -22,10 +20,12 @@ def RenderEpisode(env, model, episodes=1):
             episode_reward += reward
             obs = new_state
         print(f"Episode: {episode+1} Reward: {episode_reward}")
-    env.close()
 
 env = gym.make(env_name, render_mode="human")
 
-model = PPO.load(model_path, env)
+for model_name in model_names:
+    model_path = f"{model_dir}\\{model_type}\\{model_name}"
+    model = A2C.load(model_path, env)
+    RenderEpisode(env, model, number_episodes)
 
-RenderEpisode(env, model, 10)
+env.close()  
