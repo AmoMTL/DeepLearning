@@ -4,7 +4,7 @@
 * *MountainCar-v0 defines "solving" as getting average reward of -110.0 over 100 consecutive trials.*
 
 ## Solved using QLearning algorithm
-<img align="right" width="400" src="graphs/mean_rewards_graph.png">I implemented the Q learning algorithm to scores for the best action at different states of the game. The algorithm achieves "solve" in ~6000 episodes, as can be seen in the graph to the left.
+<img align="right" width="400" src="assets/mean_rewards_graph.png">I implemented the Q learning algorithm to scores for the best action at different states of the game. The algorithm achieves "solve" in ~6000 episodes, as can be seen in the graph to the left.
 
 The [best model](models) acheived a score of *-97.61* over 100 consecutive episodes.
 

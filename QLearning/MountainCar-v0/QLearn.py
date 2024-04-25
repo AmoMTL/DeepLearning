@@ -1,6 +1,8 @@
 import numpy as np
 import os
+import gym
 import matplotlib.pyplot as plt
+import imageio
 
 def create_directory(directory_path):
     if not os.path.exists(directory_path):
@@ -57,6 +59,39 @@ class QLearn:
                 if mean_reward >= self.win:
                     self.best_model = self.q_table
                     self.win = mean_reward
+
+    def load_qtable(self, qtable_dir="QLearning-MountainCar/models/best_qtable.npy"):
+        self.q_table = np.load(qtable_dir)
+
+    def render(self, num_episodes=5):
+        for episode in range(num_episodes):
+            state = self.env.reset()
+            discrete_state = self.get_discrete_state(state[0])
+            done = False
+            while not done:
+                action = np.argmax(self.q_table[discrete_state])
+                new_state, _, truncation, termination, _ = self.env.step(action)
+                done = truncation or termination
+                new_discrete_state = self.get_discrete_state(new_state)
+                discrete_state = new_discrete_state
+
+    def save_gif(self, env_name="MountainCar-v0", num_episodes=5, gif_path="QLearning-MountainCar/assets/gameplay.gif"):
+        env = gym.make(env_name, render_mode="rgb_array")
+        images = []
+        for _ in range(num_episodes):
+            state = env.reset()
+            discrete_state = self.get_discrete_state(state[0])
+            done = False
+            while not done:
+                images.append(env.render())  # Capture the frame
+                action = np.argmax(self.q_table[discrete_state])
+                new_state, _, truncation, termination, _ = env.step(action)
+                done = truncation or termination
+                new_discrete_state = self.get_discrete_state(new_state)
+                discrete_state = new_discrete_state
+        imageio.mimsave(gif_path, images, fps=30)
+
+
 
     def save_best_model(self, save_dir="QLearning-MountainCar/models"):
         if not os.path.exists(save_dir):
