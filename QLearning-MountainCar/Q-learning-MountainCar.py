@@ -7,20 +7,20 @@ import math
 env = gym.make("MountainCar-v0", render_mode=None)
 
 
-episodes = 20000
-render_every = 1000
+episodes = 50000
+render_every = 10000
 
 logs_every = 100
 
-learning_rate = 0.1
-discount = 0.95 # how important we find future actions
+learning_rate = 0.5
+discount = 0.995 # how important we find future actions
 
 epsilon = 0.95
-decay_start = 1000
-decay_end = 8000
+decay_start = 25
+decay_end = 2000
 decay_value = epsilon / (decay_end - decay_start)
 
-buckets_size = 20
+buckets_size = 50
 discreet_os_size = [buckets_size] * len(env.observation_space.high)
 discreet_os_win_size = (env.observation_space.high - env.observation_space.low) / discreet_os_size
 
@@ -74,6 +74,8 @@ for episode in range(episodes):
 
     if decay_start <= episode <= decay_end:
         epsilon -= decay_value
+
+    # if epsilon
 
     prior_reward = new_episode_reward
     
