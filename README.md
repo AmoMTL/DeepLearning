@@ -9,9 +9,8 @@
 ### Text generation
 * [Finetuning Llama-3 model with a custom dataset using QLoRa](<Finetuning model with cutom dataset using QLoRa\llama3_8B_QLora_cartman.ipynb>)
 ### Reinforcement learning with Game environments
-#### Custom Environments
-* Snake
-#### OpenAI Gymnasium
+#### [Q-Learning](QLearning/README.md)
+* [Cart Pole](QLearning/CartPole-v1/README.md)
+* [Mountain Car](QLearning/MountainCar-v0/README.md)
 * [Lunar Lander](PPO-LunarLander-StableBaselines3/README.md)
-* [Cart Pole](QLearning-cartpole/README.md)
-* [Mountain Car](QLearning-MountainCar/README.md)
+
