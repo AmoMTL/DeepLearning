@@ -1,0 +1,7 @@
+from models import LSTMBinaryClassifier
+
+model_path = "models\cp-0003.ckpt"
+
+article = "Following the Iran Revolutionary Guards (IRGC) drone and missile attack on Israel, many supporters of the Islamic Republic of Iran, bearing Palestinian symbols, took to the streets of Tehran in celebration. The attack was seen as crucial for the IRGC to maintain its credibility among allies in the region and its domestic supporters. Iran's Chief of Staff, Maj Gen Mohammad Bagheri, stated that among the targets inside Israel was the Israeli Notam Airforce base, where Israeli F35s flew two weeks ago, resulting in the deaths of seven IRGC commanders in the Iranian consulate in Damascus. He asserted that Iran has achieved its objective and has no intention to continue operations. Iranian President Ebrahim Raisi cautioned that any new attacks would elicit a significantly stronger response from Iran. It appears that the mood in Iran is geared towards de-escalation and tension reduction. Both military and government officials seem content with last night's attack. It seems Iran, by allowing ample time for Israel to mount its defensive measures, had no intention of inflicting further damage or casualties. Article share tools"
+
+model = LSTMBinaryClassifier().TestOne(article, model_path)
